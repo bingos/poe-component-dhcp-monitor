@@ -1,0 +1,15 @@
+use strict;
+use inc::Module::Install;
+name 'POE-Component-DHCP-Monitor';
+author 'Chris Williams <chris@bingosnet.co.uk>';
+version_from 'lib/POE/Component/DHCP/Monitor.pm';
+abstract_from 'lib/POE/Component/DHCP/Monitor.pm';
+license 'perl';
+perl_version '5.000';
+build_requires 'Test::More' => 0.47;
+requires 'warnings::compat' => 0 if $] < 5.006;
+requires 'Socket' => 0;
+requires 'Net::DHCP::Packet' => 0.66;
+requires 'POE' => 0.38;
+requires 'POE::Wheel::SocketFactory' => 0;
+WriteAll();
