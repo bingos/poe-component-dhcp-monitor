@@ -7,7 +7,7 @@ use Net::DHCP::Packet;
 use Socket;
 use vars qw($VERSION);
 
-$VERSION = '0.12';
+$VERSION = '1.00';
 
 sub spawn {
   my $package = shift;
