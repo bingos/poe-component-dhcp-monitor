@@ -10,5 +10,5 @@ build_requires 'Test::More' => 0.47;
 requires 'Net::DHCP::Packet' => 0.66;
 requires 'POE' => 1.004;
 requires 'POE::Wheel::SocketFactory' => 0;
-auto_set_repository;
+eval "auto_set_repository";
 WriteAll();
