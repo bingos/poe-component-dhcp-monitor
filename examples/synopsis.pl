@@ -8,6 +8,7 @@
   POE::Session->create(
         inline_states => {
                                _start              => \&_start,
+                                _default           => \&_default,
                                dhcp_monitor_packet => \&dhcp_monitor_packet,
 			       _default		   => \&_default,
         },
@@ -48,4 +49,20 @@
     }
     print STDOUT join ' ', @output, "\n";
     return 0;
+  }
+
+  sub _default {
+    my ($event, $args) = @_[ARG0 .. $#_];
+    my @output = ( "$event: " );
+
+    for my $arg (@$args) {
+        if ( ref $arg eq 'ARRAY' ) {
+            push( @output, '[' . join(', ', @$arg ) . ']' );
+        }
+        else {
+            push ( @output, "'$arg'" );
+        }
+    }
+    print join ' ', @output, "\n";
+    return;
   }

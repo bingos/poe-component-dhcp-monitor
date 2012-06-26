@@ -1,13 +1,12 @@
 package POE::Component::DHCP::Monitor;
 
+#ABSTRACT: A simple POE Component for monitoring DHCP traffic.
+
 use strict;
 use warnings;
 use POE qw(Wheel::SocketFactory);
 use Net::DHCP::Packet;
 use Socket;
-use vars qw($VERSION);
-
-$VERSION = '1.02';
 
 sub spawn {
   my $package = shift;
@@ -193,11 +192,8 @@ sub _shutdown {
 }
 
 1;
-__END__
 
-=head1 NAME
-
-POE::Component::DHCP::Monitor - A simple POE Component for monitoring DHCP traffic.
+=pod
 
 =head1 SYNOPSIS
 
@@ -210,7 +206,8 @@ POE::Component::DHCP::Monitor - A simple POE Component for monitoring DHCP traff
 
   POE::Session->create(
 	inline_states => {
-				_start 		    => \&_start,
+				_start		    => \&_start,
+        _default      => \&_default,
 				dhcp_monitor_packet => \&dhcp_monitor_packet,
 	},
   );
@@ -220,10 +217,10 @@ POE::Component::DHCP::Monitor - A simple POE Component for monitoring DHCP traff
 
   sub _start {
     my ($kernel,$heap) = @_[KERNEL,HEAP];
-    $heap->{monitor} = 
+    $heap->{monitor} =
 	POE::Component::DHCP::Monitor->spawn(
 		alias => 'monitor',       # optional
-		port1  => 67, 		  # default shown
+		port1  => 67,		  # default shown
 		port2  => 68,		  # default shown
 		address => '192.168.1.1', # default is INADDR_ANY
 	);
@@ -234,6 +231,23 @@ POE::Component::DHCP::Monitor - A simple POE Component for monitoring DHCP traff
     my ($kernel,$heap,$packet) = @_[KERNEL,HEAP,ARG0];
     print STDOUT $packet->toString();
     print STDOUT "=============================================================================\n";
+    return;
+  }
+
+  # This should show any unhandled events
+  sub _default {
+    my ($event, $args) = @_[ARG0 .. $#_];
+    my @output = ( "$event: " );
+
+    for my $arg (@$args) {
+        if ( ref $arg eq 'ARRAY' ) {
+            push( @output, '[' . join(', ', @$arg ) . ']' );
+        }
+        else {
+            push ( @output, "'$arg'" );
+        }
+    }
+    print join ' ', @output, "\n";
     return;
   }
 
@@ -357,16 +371,8 @@ Sent by the component to 'registered' sessions when an error occurs in parsing a
 
 =back
 
-=head1 AUTHOR
-
-Chris C<BinGOs> Williams <chris@bingosnet.co.uk>
-
-=head1 LICENSE
-
-Copyright C<(c)> Chris Williams.
-
-This module may be used, modified, and distributed under the same terms as Perl itself. Please see the license that came with your Perl distribution for details.
-
 =head1 SEE ALSO
 
 L<Net::DHCP::Packet>
+
+=cut
